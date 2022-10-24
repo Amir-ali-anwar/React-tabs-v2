@@ -7,13 +7,21 @@ function App() {
   const [loading, Setloading] = useState(false);
   const [jobs, Setjobs] = useState([]);
   const [index, Setindex] = useState(0);
-  console.log(index);
+  const [error, Seterror] = useState("");
   const fetchJobs = async () => {
-    Setloading(true);
-    const response = await fetch(url);
-    const data = await response.json();
-    Setjobs(data);
-    Setloading(false);
+    try {
+      Setloading(true);
+      const response = await fetch(url);
+      const data = await response.json();
+      if (!data) {
+        Seterror("Data not found");
+      } else {
+        Setjobs(data);
+        Setloading(false);
+      }
+    } catch (error) {
+      Seterror(error);
+    }
   };
   useEffect(() => {
     fetchJobs();
@@ -25,7 +33,9 @@ function App() {
       </section>
     );
   }
-  const { company, dates, duties, title } = jobs[0];
+
+  // const { company, dates, duties, title } = jobs[index];
+  // console.log(company);
   return (
     <section className="section">
       <div className="title">
@@ -38,18 +48,19 @@ function App() {
                 <button
                   key={Index}
                   className={`job-btn ${Index === index && "active-btn"}`}
-                  onClick={() => Setindex(index)}
+                  onClick={() => Setindex(Index)}
                 >
                   {job.company}
                 </button>
               );
             })}
           </div>
-          <article className="job-info">
+          {/* <article className="job-info">
             <h3>{title}</h3>
             <h4>{company}</h4>
             <p className="job-date">{dates}</p>
-            {duties.map((duty, index) => {
+            {duties?.map((duty, index) => {
+              console.log(duty);
               return (
                 <div key={index} className="job-desc">
                   <FaAngleDoubleRight className="job-icon"></FaAngleDoubleRight>
@@ -57,7 +68,7 @@ function App() {
                 </div>
               );
             })}
-          </article>
+          </article> */}
         </div>
       </div>
     </section>
